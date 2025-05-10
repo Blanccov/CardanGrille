@@ -77,6 +77,49 @@ def encrypt_with_grill_verbose(n, message, key_positions):
     encrypted_message_str = ''.join(grid[x][y] for x in range(n) for y in range(n) if (x, y) != (n // 2, n // 2))
     return encrypted_message_str
 
+# Funkcja do deszyfrowania
+def decrypt_with_grill_verbose(n, encrypted_message, key_positions):
+    assert len(encrypted_message) == n * n - 1, "Zaszyfrowana wiadomość musi mieć dokładnie n² - 1 znaków"
+
+    # Tworzymy grid z załadowanymi literami z wiadomości
+    grid = [['' for _ in range(n)] for _ in range(n)]
+    decrypt_grid = [['' for _ in range(n)] for _ in range(n)]
+    msg_idx = 0
+
+    # Ładujemy wiadomość do grida (pomijając środek)
+    for x in range(n):
+        for y in range(n):
+            if (x, y) != (n // 2, n // 2):
+                grid[x][y] = encrypted_message[msg_idx]
+                decrypt_grid[x][y] = encrypted_message[msg_idx]
+                msg_idx += 1
+
+    print("🔓 Proces deszyfrowania:")
+
+    decrypted_message = ""
+
+    # Odczytujemy litery z grida na podstawie rotacji klucza
+    for rot in range(4):
+        print(f"🌀 Rotacja {rot * 90}°:")
+
+        # Rotujemy współrzędne klucza
+        rotated_key_positions = [rotate_coords(n, x, y, rot) for x, y in key_positions]
+        rotated_key_positions.sort()
+
+        # Wizualizacja grida i klucza
+        print_key_grid(n, key_positions, rot)  # Wizualizacja klucza
+        print_grid(decrypt_grid)  # Można pokazać grid po wszystkich rotacjach
+
+        # Odczytujemy wiadomość, korzystając z otworów w kluczu
+        for x, y in rotated_key_positions:
+            if (x, y) == (n // 2, n // 2):
+                continue  # Ignorujemy środek
+            decrypted_message += grid[x][y]
+            decrypt_grid[x][y] = '.'
+            print(f"  Odczytuję '{grid[x][y]}' → pole ({x},{y})")
+
+    return decrypted_message
+
 # Funkcja do dostosowania długości wiadomości
 def adjust_message_length(n, message):
     required_length = n * n - 1
@@ -104,6 +147,8 @@ print()
 
 # 🔐 Szyfrowanie z wypisywaniem kroków
 encrypted_message = encrypt_with_grill_verbose(n, message, key)
-
-# Po zakończeniu szyfrowania wypisanie zaszyfrowanej wiadomości
 print(f"🔒 Zaszyfrowana wiadomość: {encrypted_message}")
+
+# Przykład deszyfrowania
+decrypted_message = decrypt_with_grill_verbose(n, encrypted_message, key)
+print(f"🔑 Odszyfrowana wiadomość: {decrypted_message}")
