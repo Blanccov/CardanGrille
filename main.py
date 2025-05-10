@@ -50,8 +50,10 @@ def encrypt_with_grill_verbose(n, message, key_positions):
     assert len(message) == n * n - 1, "Wiadomość musi mieć dokładnie n² - 1 znaków"
     grid = [['' for _ in range(n)] for _ in range(n)]
     msg_idx = 0
+
     print("🔐 Proces szyfrowania:")
 
+    # Tworzenie szyfrogramu przez rotacje
     for rot in range(4):
         print(f"🌀 Rotacja {rot * 90}°:")
         print_key_grid(n, key_positions, rot)  # Wizualizacja klucza
@@ -63,7 +65,10 @@ def encrypt_with_grill_verbose(n, message, key_positions):
             print(f"  Wpisuję '{message[msg_idx]}' → pole ({rx},{ry})")
             msg_idx += 1
         print_grid(grid)
-    return grid
+
+    # Odczytanie zaszyfrowanej wiadomości: odczytujemy z siatki
+    encrypted_message_str = ''.join(grid[x][y] for x in range(n) for y in range(n) if (x, y) != (n // 2, n // 2))
+    return encrypted_message_str
 
 # Funkcja do dostosowania długości wiadomości
 def adjust_message_length(n, message):
@@ -91,4 +96,7 @@ for x, y in key:
 print()
 
 # 🔐 Szyfrowanie z wypisywaniem kroków
-encrypted_grid = encrypt_with_grill_verbose(n, message, key)
+encrypted_message = encrypt_with_grill_verbose(n, message, key)
+
+# Po zakończeniu szyfrowania wypisanie zaszyfrowanej wiadomości
+print(f"🔒 Zaszyfrowana wiadomość: {encrypted_message}")
