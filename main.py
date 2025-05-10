@@ -59,13 +59,17 @@ def encrypt_with_grill_verbose(n, message, key_positions):
     # Tworzenie szyfrogramu przez rotacje
     for rot in range(4):
         print(f"🌀 Rotacja {rot * 90}°:")
+        # Rotujemy współrzędne klucza
+        rotated_key_positions = [rotate_coords(n, x, y, rot) for x, y in key_positions]
+        rotated_key_positions.sort()
+
         print_key_grid(n, key_positions, rot)  # Wizualizacja klucza
-        for i, (x, y) in enumerate(key_positions):
-            rx, ry = rotate_coords(n, x, y, rot)
-            if (rx, ry) == (n//2, n//2):
-                continue
-            grid[rx][ry] = message[msg_idx]
-            print(f"  Wpisuję '{message[msg_idx]}' → pole ({rx},{ry})")
+
+        for i, (x, y) in enumerate(rotated_key_positions):
+            if (x, y) == (n // 2, n // 2):
+                continue  # Ignorujemy środek
+            grid[x][y] = message[msg_idx]
+            print(f"  Wpisuję '{message[msg_idx]}' → pole ({x},{y})")
             msg_idx += 1
         print_grid(grid)
 
