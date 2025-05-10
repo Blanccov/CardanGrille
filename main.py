@@ -26,6 +26,9 @@ def generate_random_grill_key(n):
         if len(used) >= n * n - 1:
             break
 
+    # Posortowanie pozycji bez użycia lambda
+    key_positions.sort()
+
     return key_positions
 
 # Funkcja do wyświetlania gridu
