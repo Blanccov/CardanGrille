@@ -1,7 +1,7 @@
 from math import log10
 
 class Ngram(object):
-    def __init__(self, path, sep=''):
+    def __init__(self, path, sep=' '):
         self.ngrams = {}
         with open(path, 'r') as f:
             for line in f:
@@ -11,10 +11,13 @@ class Ngram(object):
         self.len_of_ngram = len(ngram)  # bi-gram, tri-gram etc.
         self.num_of_ngrams = sum(self.ngrams.values())
 
-        # calculate probabilities
-        for ngram in self.ngrams.keys():
-            self.ngrams[ngram] = log10(float(self.ngrams[ngram]) / self.num_of_ngrams)
+        # calculate probabilities for known n-grams
+        for ngram in list(self.ngrams.keys()):
+            count = self.ngrams[ngram]
+            if count > 0:
+                self.ngrams[ngram] = log10(float(count) / self.num_of_ngrams)
 
+        # Log probability floor for unknown n-grams
         self.floor = log10(0.01 / self.num_of_ngrams)
 
     def score(self, message):
