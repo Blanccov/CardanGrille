@@ -1,33 +1,28 @@
 from math import log10
 
-class Ngram(object):
-    def __init__(self, path, sep=' '):
+class Ngram_score:
+    def __init__(self, ngramfile='en_bigrams.csv', sep=' '):
         self.ngrams = {}
-        with open(path, 'r') as f:
-            for line in f:
-                ngram, count = line.strip().split(sep)
-                self.ngrams[ngram] = int(count)
 
-        self.len_of_ngram = len(ngram)  # bi-gram, tri-gram etc.
-        self.num_of_ngrams = sum(self.ngrams.values())
+        with open(f'./{ngramfile}', 'r', encoding='UTF-8') as file:
+            lines = file.readlines()
 
-        # calculate probabilities for known n-grams
-        for ngram in list(self.ngrams.keys()):
-            count = self.ngrams[ngram]
-            if count > 0:
-                self.ngrams[ngram] = log10(float(count) / self.num_of_ngrams)
+        for line in lines:
+            key, count = line.split(sep)
+            self.ngrams[key] = int(count)
 
-        # Log probability floor for unknown n-grams
-        self.floor = log10(0.01 / self.num_of_ngrams)
+        self.L = len(key)
+        self.N = sum(self.ngrams.values())
 
-    def score(self, message):
-        score = 0
-        ngrams = self.ngrams.__getitem__
-        for i in range(len(message) - self.len_of_ngram + 1):
-            ngram = message[i:i + self.len_of_ngram]
-            if ngram in self.ngrams:
-                score += ngrams(ngram)
-            else:
-                score += self.floor
+        for key in self.ngrams.keys():
+            self.ngrams[key] = log10(float(self.ngrams[key]) / self.N)
 
-        return score
+        self.floor = log10(0.001 / self.N)
+
+
+    def score(self, text):
+        ngrams = self.ngrams
+        floor = self.floor
+        L = self.L
+
+        return sum(ngrams.get(text[i:i + L], floor) for i in range(len(text) - L + 1))
