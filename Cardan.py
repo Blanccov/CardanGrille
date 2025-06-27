@@ -84,7 +84,7 @@ def calculate_min_n(message):
 """
 # Metoda szyfrująca która zamiast losowych znaków dodaje puste pola
 
-def encrypt_message_in_blocks(full_message, n, key_positions, block_n):
+def encrypt_message_in_blocks(full_message, key_positions, block_n):
     block_size = block_n * block_n - 1
     padding_len = (block_size - (len(full_message) % block_size)) % block_size
 
@@ -99,9 +99,8 @@ def encrypt_message_in_blocks(full_message, n, key_positions, block_n):
     return ''.join(encrypted_blocks)
 """
 
-def encrypt_message_in_blocks(full_message, n, key_positions, block_n=11):
+def encrypt_message_in_blocks(full_message, key_positions, block_n = 7, alfabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'):
     block_size = block_n * block_n - 1
-    alfabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
     padding_len = (block_size - (len(full_message) % block_size)) % block_size
 
@@ -116,7 +115,7 @@ def encrypt_message_in_blocks(full_message, n, key_positions, block_n=11):
 
     return ''.join(encrypted_blocks)
 
-def decrypt_message_in_blocks(encrypted_full_message, key_positions, block_n=11):
+def decrypt_message_in_blocks(encrypted_full_message, key_positions, block_n = 7):
     block_size = block_n * block_n - 1
 
     decrypted_blocks = []

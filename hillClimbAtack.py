@@ -114,7 +114,7 @@ n = calculate_min_n(message)
 block_n = 7
 
 true_key = generate_random_key(block_n)
-encrypted_message = encrypt_message_in_blocks(message, n, true_key, block_n)
+encrypted_message = encrypt_message_in_blocks(message, true_key, block_n, alfabet)
 
 best_decryption = shotgun_hill_climbing(encrypted_message, NGRAM_SCORER, block_n)
 print('Is the same = ', message[:60] == best_decryption[:60])
